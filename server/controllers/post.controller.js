@@ -19,6 +19,20 @@ export function getPosts(req, res) {
 }
 
 /**
+ * Edit post
+ * @param req 
+ * @param res 
+ */
+export function editPost(req, res) {
+  Post.update({ cuid: req.params.cuid }, req.body.post).exec((err, post) => {
+    if (err) {
+      res.status(500).send(err);
+    }
+    res.json({ post });
+  });
+}
+
+/**
  * Save a post
  * @param req
  * @param res
@@ -76,5 +90,23 @@ export function deletePost(req, res) {
     post.remove(() => {
       res.status(200).end();
     });
+  });
+}
+
+export function scoreUpPost(req, res) {
+  Post.update({ cuid: req.params.cuid }, { $inc: { score: 1 } }).exec((err, post) => {
+    if (err) {
+      res.status(500).send(err);
+    }
+    res.json({ post });
+  });
+}
+
+export function scoreDownPost(req, res) {
+  Post.update({ cuid: req.params.cuid }, { $inc: { score: -1 } }).exec((err, post) => {
+    if (err) {
+      res.status(500).send(err);
+    }
+    res.json({ post });
   });
 }
