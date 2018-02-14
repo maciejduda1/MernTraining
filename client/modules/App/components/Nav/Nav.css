@@ -1,0 +1,28 @@
+.nav-part {
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+.nav-part ul {
+    list-style: none;
+    width: 980px;
+    margin: auto;
+    text-align: right;
+  }
+  
+  .nav-part li {
+    display: inline-block;
+    margin: 10px;
+    padding: 5px;
+    cursor: pointer;
+    color: #fff;
+  }
+  .nav-part li a{
+    cursor: pointer;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  
+  .nav-part li:first-child {
+    color: rgba(255, 255, 255, 0.7);
+  }
