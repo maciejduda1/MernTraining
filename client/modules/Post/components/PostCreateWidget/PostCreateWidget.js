@@ -4,8 +4,6 @@ import { injectIntl, intlShape, FormattedMessage } from 'react-intl';
 // Import Style
 import styles from './PostCreateWidget.css';
 
-
-
 export class PostCreateWidget extends Component {
   constructor(props) {
     super(props);
@@ -15,61 +13,60 @@ export class PostCreateWidget extends Component {
       inputContent: '',
     };
   }
-
   componentDidMount = () => {
-    this.setState({ inputAuthor: localStorage.getItem('Author') || 'Author' });
-    this.setState({ inputTitle: localStorage.getItem('Title') || 'Title' });
-    this.setState({ inputContent: localStorage.getItem('Content') || 'Content' });
-  }
-  componentDidUpdate = () => {
-  /*  console.log('inputTitle ', this.state.inputTitle);
-    console.log('inputName ', this.state.inputAuthor);
-    console.log('inputContent ', this.state.inputContent);
-    console.log('local', localStorage.getItem("Author"));*/
-    localStorage.setItem('Author', this.state.inputAuthor);
-    localStorage.setItem('Title', this.state.inputTitle);
-    localStorage.setItem('Content', this.state.inputContent);
+    if (localStorage.getItem('myApp')) {
+      let appState = localStorage.getItem('myApp');
+      appState = JSON.parse(appState);
+      this.setState({
+        inputAuthor: appState.MyAppFormData.Author,
+        inputTitle: appState.MyAppFormData.Title,
+        inputContent: appState.MyAppFormData.Content,
+      });
+    }
+    if (!localStorage.getItem('myApp')) {
+      this.setState({
+        inputAuthor: 'Author',
+        inputTitle: 'Title',
+        inputContent: 'Content',
+      });
+    }
   }
   handleChange = (event) => {
-    if (event.target.name === 'Title') {
-      this.setState({ inputTitle: event.target.value });
-    }
-    if (event.target.name === 'Author') {
-      this.setState({ inputAuthor: event.target.value });
-    }
-    if (event.target.name === 'Content') {
-      this.setState({ inputContent: event.target.value });
-    }
+    const inputName = event.target.name;
+    this.setState({ [inputName]: event.target.value });
+    const myApp = {
+      MyAppFormData: {
+        Title: this.state.inputTitle,
+        Content: this.state.inputContent,
+        Author: this.state.inputAuthor,
+      },
+    };
+    localStorage.setItem('myApp', JSON.stringify(myApp));
   }
   handleSubmit = () => {
-    localStorage.removeItem('Author');
-    localStorage.removeItem('Title');
-    localStorage.removeItem('Content');
-    console.log('consolouje usuniety tag', localStorage.getItem('Author'));
-    this.setState({ inputAuthor: 'Author' });
-    this.setState({ inputTitle: 'Title' });
-    this.setState({ inputContent: 'Content' });
+    localStorage.removeItem('myApp');
+  //  console.log('consolouje usuniety tag', localStorage.getItem('myApp'));
+    this.setState({ 
+      inputAuthor: 'Author',
+      inputTitle: 'Title',
+      inputContent: 'Content',
+    });
   }
   addPost = () => {
-    const nameRef = this.refs.name;
-    const titleRef = this.refs.title;
-    const contentRef = this.refs.content;
-    if (nameRef.value && titleRef.value && contentRef.value) {
-      this.props.addPost(nameRef.value, titleRef.value, contentRef.value);
-      nameRef.value = titleRef.value = contentRef.value = '';
+    if (this.state.inputAuthor && this.state.inputTitle && this.state.inputContent) {
+      this.props.addPost(this.state.inputAuthor, this.state.inputTitle, this.state.inputContent);
       this.handleSubmit();
     }
   };
-  // this.props.intl.messages.authorName  defaultValue={localStorage.getItem("Author")}
   render() {
     const cls = `${styles.form} ${(this.props.showAddPost ? styles.appear : '')}`;
     return (
       <div className={cls}>
         <div className={styles['form-content']} >
           <h2 className={styles['form-title']}><FormattedMessage id="createNewPost" /></h2>
-          <input placeholder={this.state.inputAuthor} value={this.state.inputAuthor} className={styles['form-field']} ref="name" name="Author" onChange={this.handleChange} />
-          <input placeholder={this.props.intl.messages.postTitle} value={this.state.inputTitle} className={styles['form-field']} ref="title" name="Title" onChange={this.handleChange} />
-          <textarea placeholder={this.props.intl.messages.postContent} value={this.state.inputContent} className={styles['form-field']} ref="content" name="Content" onChange={this.handleChange} />
+          <input value={this.state.inputAuthor} className={styles['form-field']} name="inputAuthor" onChange={this.handleChange} />
+          <input value={this.state.inputTitle} className={styles['form-field']} name="inputTitle" onChange={this.handleChange} />
+          <textarea value={this.state.inputContent} className={styles['form-field']} name="inputContent" onChange={this.handleChange} />
           <a className={styles['post-submit-button']} href="#" onClick={this.addPost}><FormattedMessage id="submit" /></a>
         </div>
       </div>
