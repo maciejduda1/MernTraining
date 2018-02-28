@@ -13,6 +13,7 @@ export class PostCreateWidget extends Component {
       inputContent: '',
     };
   }
+
   componentDidMount = () => {
     if (localStorage.getItem('myApp')) {
       let appState = localStorage.getItem('myApp');
@@ -31,9 +32,7 @@ export class PostCreateWidget extends Component {
       });
     }
   }
-  handleChange = (event) => {
-    const inputName = event.target.name;
-    this.setState({ [inputName]: event.target.value });
+  componentDidUpdate = () => {
     const myApp = {
       MyAppFormData: {
         Title: this.state.inputTitle,
@@ -42,6 +41,11 @@ export class PostCreateWidget extends Component {
       },
     };
     localStorage.setItem('myApp', JSON.stringify(myApp));
+  }
+  handleChange = (event) => {
+    const inputName = event.target.name;
+    this.setState({ [inputName]: event.target.value });
+    
   }
   handleSubmit = () => {
     localStorage.removeItem('myApp');
